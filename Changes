@@ -1,5 +1,10 @@
 Revision history for File-Unsaved
 
+0.02    2014-10-09 (PERLANCAR)
+
+        - Add support for vim & joe.
+
+
 0.01    2014-10-09 (PERLANCAR)
 
-        - First release.
+        - First release, only has support for Emacs.
