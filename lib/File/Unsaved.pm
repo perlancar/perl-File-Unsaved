@@ -20,14 +20,21 @@ $SPEC{check_unsaved_file} = {
 
 This function tries, using some heuristics, to find out if a file is being
 opened and has unsaved modification in an editor. Currently the supported
-editors are: Emacs, joe, vi/vim.
+editors are: Emacs, joe, vim.
 
 Return false if no unsaved data is detected, or else a hash structure. Hash will
 contain these keys: `editor` (kind of editor).
 
 The heuristics are as folow:
 
-* Emacs and joe: check whether `.#<name>` (symlink) exists.
+* Emacs and joe: check whether `.#<name>` (symlink) exists. Emacs targets the
+  symlink to `<user>@<host>.<PID>:<timestamp>` while joe to
+  `<user>@<host>.<PID>`. Caveat: Unix only.
+
+* vim: check whether `.<name>.swp` exists, newer than file, and its 0x03ef-th
+  byte has the value of `U` (which vim uses to mark the file as unsaved).
+  Caveat: vim can be instructed to put swap file somewhere else or not create
+  swap file at all, so in those cases unsaved data will not be detected.
 
 _
     args => {
@@ -47,18 +54,30 @@ sub check_unsaved_file{
     my $path = $args{path};
     (-f $path) or die "File does not exist or not a regular file";
 
+    my ($vol, $dir, $file) = File::Spec->splitpath($path);
+
     # emacs & joe
     {
-        my ($vol, $dir, $file) = File::Spec->splitpath($path);
         my $spath = File::Spec->catpath($vol, $dir, ".#$file");
-        if (-l $spath) {
-            my $target = readlink $spath;
-            if ($target =~ /:\d+$/) {
-                return {editor=>'emacs'};
-            } else {
-                return {editor=>'joe'};
-            }
+        last unless -l $spath;
+        my $target = readlink $spath;
+        if ($target =~ /:\d+$/) {
+            return {editor=>'emacs'};
+        } else {
+            return {editor=>'joe'};
         }
+    }
+
+    # vim
+    {
+        my $spath = File::Spec->catpath($vol, $dir, ".$file.swp");
+        last unless -f $spath;
+        last if (-M $spath) > (-M $path); # swap file is older
+        open my($fh), "<", $spath or last;
+        sysseek $fh, 0x03ef, 0 or last;
+        sysread $fh, my($data), 1 or last;
+        $data eq 'U' or last;
+        return {editor => 'vim'};
     }
 
     undef;
