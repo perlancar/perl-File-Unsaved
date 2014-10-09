@@ -27,14 +27,14 @@ contain these keys: `editor` (kind of editor).
 
 The heuristics are as folow:
 
-* Emacs and joe: check whether `.#<name>` (symlink) exists. Emacs targets the
+* Emacs and joe: check whether `.#<name>` symlink exists. Emacs targets the
   symlink to `<user>@<host>.<PID>:<timestamp>` while joe to
   `<user>@<host>.<PID>`. Caveat: Unix only.
 
-* vim: check whether `.<name>.swp` exists, newer than file, and its 0x03ef-th
-  byte has the value of `U` (which vim uses to mark the file as unsaved).
-  Caveat: vim can be instructed to put swap file somewhere else or not create
-  swap file at all, so in those cases unsaved data will not be detected.
+* vim: check whether `.<name>.swp` file exists, not older than file, and its
+  0x03ef-th byte has the value of `U` (which vim uses to mark the file as
+  unsaved). Caveat: vim can be instructed to put swap file somewhere else or not
+  create swap file at all, so in those cases unsaved data will not be detected.
 
 _
     args => {
