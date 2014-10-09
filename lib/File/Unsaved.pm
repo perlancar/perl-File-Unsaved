@@ -19,15 +19,15 @@ $SPEC{check_unsaved_file} = {
     description => <<'_',
 
 This function tries, using some heuristics, to find out if a file is being
-opened and has unsaved modification in an editor. Currently the supported editor
-is Emacs.
+opened and has unsaved modification in an editor. Currently the supported
+editors are: Emacs, joe, vi/vim.
 
 Return false if no unsaved data is detected, or else a hash structure. Hash will
 contain these keys: `editor` (kind of editor).
 
 The heuristics are as folow:
 
-* Emacs: check whether `.#<name>` (symlink) exists.
+* Emacs and joe: check whether `.#<name>` (symlink) exists.
 
 _
     args => {
@@ -47,12 +47,17 @@ sub check_unsaved_file{
     my $path = $args{path};
     (-f $path) or die "File does not exist or not a regular file";
 
-    # emacs
+    # emacs & joe
     {
         my ($vol, $dir, $file) = File::Spec->splitpath($path);
         my $spath = File::Spec->catpath($vol, $dir, ".#$file");
         if (-l $spath) {
-            return {editor=>'emacs'};
+            my $target = readlink $spath;
+            if ($target =~ /:\d+$/) {
+                return {editor=>'emacs'};
+            } else {
+                return {editor=>'joe'};
+            }
         }
     }
 
