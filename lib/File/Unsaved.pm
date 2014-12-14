@@ -88,9 +88,9 @@ sub check_unsaved_file{
 
 =head1 SYNOPSIS
 
- use File::Unsaved qw(check_file_unsaved);
+ use File::Unsaved qw(check_unsaved_file);
  die "Can't modify foo.txt because it is being opened and modified in an editor"
-     if check_file_unsaved(path => "foo.txt");
+     if check_unsaved_file(path => "foo.txt");
 
 
 =head1 DESCRIPTION
