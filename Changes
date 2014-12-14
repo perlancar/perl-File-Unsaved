@@ -1,5 +1,12 @@
 Revision history for File-Unsaved
 
+0.03    2014-12-14 (PERLANCAR)
+
+	- No functional changes.
+
+	- Typo in example.
+
+
 0.02    2014-10-09 (PERLANCAR)
 
         - Add support for vim & joe.
