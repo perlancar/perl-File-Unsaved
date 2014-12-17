@@ -84,7 +84,7 @@ sub check_unsaved_file{
 }
 
 1;
-# ABSTRACT: Check whether file has unsaved modification in an editor
+# ABSTRACT:
 
 =head1 SYNOPSIS
 
