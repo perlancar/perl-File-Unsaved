@@ -1,5 +1,17 @@
 Revision history for File-Unsaved
 
+0.04    2014-12-24 (PERLANCAR)
+
+        - Add support for 'mc' editor. Its temporary symlink is the same as
+          'joe' so when we cannot determine further, the result's 'editor' key
+          will be set to 'joe/mc'.
+
+        - Add options: check_pid & check_proc_name, activated by default. To
+          avoid false positive, now by default also checks that PID exists and
+          check that process name is the same as editor name (but only when
+          Proc::Find module is available).
+
+
 0.03    2014-12-14 (PERLANCAR)
 
 	- No functional changes.
