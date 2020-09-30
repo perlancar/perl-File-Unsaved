@@ -1,6 +1,8 @@
 package File::Unsaved;
 
+# AUTHORITY
 # DATE
+# DIST
 # VERSION
 
 use 5.010001;
@@ -90,7 +92,7 @@ sub check_unsaved_file{
     my $check_proc_name = $args{check_proc_name} // 1;
     my $path = $args{path};
 
-    (-f $path) or die "File does not exist or not a regular file";
+    (-f $path) or die "File does not exist or not a regular file: '$path'";
 
     my ($vol, $dir, $file) = File::Spec->splitpath($path);
 
